@@ -6,7 +6,7 @@
     {
         public static string GetBaseUrl(this HttpRequest request)
         {
-            return request.Scheme + "://" + request.Host.Value;
+            return request.Scheme + "://" + request.Host.Value + request.PathBase.Value;
         }
     }
 }
