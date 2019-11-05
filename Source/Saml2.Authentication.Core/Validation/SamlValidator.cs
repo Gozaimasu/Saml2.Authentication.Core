@@ -92,11 +92,12 @@
             throw new Saml2Exception($"Saml2 authentication failed. Status: {status.StatusCode.Value}");
         }
 
-        public Saml2Assertion GetValidatedAssertion(XmlElement element)
+        public Saml2Assertion GetValidatedAssertion(XmlElement element, string identityProviderName)
         {
-            var signingCertificate = _configurationProvider.ServiceProviderSigningCertificate();
+            var signingCertificate = _configurationProvider.GetIdentityProviderSigningCertificate(identityProviderName);
+            var encryptionCertificate = _configurationProvider.ServiceProviderSigningCertificate();
 
-            var assertionElement = _xmlProvider.GetAssertion(element, signingCertificate.PrivateKey);
+            var assertionElement = _xmlProvider.GetAssertion(element, encryptionCertificate.PrivateKey);
             var key = signingCertificate.PublicKey.Key;
             var audience = ServiceProviderConfiguration.EntityId;
 

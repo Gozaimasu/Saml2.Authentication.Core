@@ -7,7 +7,7 @@
     {
         Task InitiateSsoAsync(string providerName, string requestId, string relayState = null);
 
-        Task<Saml2Assertion> ReceiveHttpRedirectAuthnResponseAsync(string initialRequestId);
+        Task<Saml2Assertion> ReceiveHttpRedirectAuthnResponseAsync(string providerName, string initialRequestId);
 
         Task SignInAsync(
             string signinScheme,

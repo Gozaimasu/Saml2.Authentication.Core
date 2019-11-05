@@ -8,7 +8,7 @@
     {
         bool Validate(XmlElement samlResponse, string originalRequestId);
 
-        Saml2Assertion GetValidatedAssertion(XmlElement element);
+        Saml2Assertion GetValidatedAssertion(XmlElement element, string identityProviderName);
 
         void CheckReplayAttack(string inResponseTo, string originalSamlRequestId);
 

@@ -158,7 +158,7 @@
             properties.Items.TryGetValue(AuthnRequestIdKey, out var initialAuthnRequestId);
             properties.Items.TryGetValue(nameof(Options.SignInScheme), out var signInScheme);
 
-            var assertion = await _samlService.ReceiveHttpRedirectAuthnResponseAsync(initialAuthnRequestId);
+            var assertion = await _samlService.ReceiveHttpRedirectAuthnResponseAsync(Options.IdentityProviderName, initialAuthnRequestId);
             await _samlService.SignInAsync(signInScheme, assertion, properties);
 
             await _sessionStore.RemoveAsync<AuthenticationProperties>();

@@ -74,7 +74,7 @@
             return Task.CompletedTask;
         }
 
-        public Task<Saml2Assertion> ReceiveHttpRedirectAuthnResponseAsync(string initialRequestId)
+        public Task<Saml2Assertion> ReceiveHttpRedirectAuthnResponseAsync(string providerName, string initialRequestId)
         {
             var result = _httpRedirectBinding.GetResponse();
             var samlResponseDocument = _xmlProvider.GetDecodedSamlResponse(result);
@@ -82,7 +82,7 @@
             var isValid = _validator.Validate(response, initialRequestId);
             if (isValid)
             {
-                return Task.FromResult(_validator.GetValidatedAssertion(response));
+                return Task.FromResult(_validator.GetValidatedAssertion(response, providerName));
             }
 
             throw new InvalidOperationException("The received samlAssertion is invalid");
@@ -95,7 +95,7 @@
             var isValid = _validator.Validate(assertionElement, initialRequestId);
             if (isValid)
             {
-                return Task.FromResult(_validator.GetValidatedAssertion(assertionElement));
+                return Task.FromResult(_validator.GetValidatedAssertion(assertionElement, providerName));
             }
 
             throw new InvalidOperationException("The received samlAssertion is invalid");
