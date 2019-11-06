@@ -40,6 +40,10 @@
 
         public string ArtifactResolveService { get; set; }
 
-        public Certificate Certificate { get; set; }
+        public Certificate SigningCertificate { get; set; }
+
+        public Certificate EncryptionCertificate { get; set; }
+
+        public string FederationMetadata { get; set; }
     }
 }

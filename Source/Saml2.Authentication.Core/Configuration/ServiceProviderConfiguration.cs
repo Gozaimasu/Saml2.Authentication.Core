@@ -12,6 +12,8 @@
 
         public string SingleLogoutResponseServiceUrl { get; set; } = "Saml2/SingleLogoutService";
 
-        public Certificate Certificate { get; set; }
+        public Certificate SigningCertificate { get; set; }
+
+        public Certificate EncryptionCertificate { get; set; }
     }
 }

@@ -31,7 +31,7 @@
 
         public X509Certificate2 GetIdentityProviderSigningCertificate(string providerName)
         {
-            var certificateDetails = GetIdentityProviderConfiguration(providerName).Certificate;
+            var certificateDetails = GetIdentityProviderConfiguration(providerName).SigningCertificate;
 
             var certificate = LoadCertificate(certificateDetails);
             if (certificate == null)
@@ -44,7 +44,7 @@
 
         public X509Certificate2 ServiceProviderSigningCertificate()
         {
-            var certificateDetails = ServiceProviderConfiguration.Certificate;
+            var certificateDetails = ServiceProviderConfiguration.SigningCertificate;
 
             var certificate = LoadCertificate(certificateDetails);
             if (certificate == null)
@@ -56,17 +56,42 @@
             return certificate;
         }
 
-        private X509Certificate2 LoadCertificate(Certificate certificateDetails) =>
-            certificateDetails.Thumbprint.IsNotNullOrEmpty()
-                ? FindCertificate(
+        public X509Certificate2 ServiceProviderEncryptionCertificate()
+        {
+            var certificateDetails = ServiceProviderConfiguration.EncryptionCertificate;
+            if (certificateDetails == null)
+                return null;
+
+            var certificate = LoadCertificate(certificateDetails);
+            if (certificate == null)
+                return null;
+
+            CheckPrivateKey(certificate);
+            return certificate;
+        }
+
+        private X509Certificate2 LoadCertificate(Certificate certificateDetails)
+        {
+            if(certificateDetails.Thumbprint.IsNotNullOrEmpty())
+            {
+                return FindCertificate(
                     certificateDetails.Thumbprint,
                     X509FindType.FindByThumbprint,
                     certificateDetails.GetStoreName(),
-                    certificateDetails.GetStoreLocation())
-                : LoadCertificateFromFile(
+                    certificateDetails.GetStoreLocation());
+            }
+
+            if(certificateDetails.FileName.IsNotNullOrEmpty())
+            {
+                return LoadCertificateFromFile(
                     certificateDetails.FileName,
                     certificateDetails.Password,
                     certificateDetails.GetKeyStorageFlags());
+            }
+
+            byte[] data = Convert.FromBase64String(certificateDetails.X509String);
+            return new X509Certificate2(data);
+        }
 
         private X509Certificate2 LoadCertificateFromFile(
             string filename,
