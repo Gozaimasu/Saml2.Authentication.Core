@@ -89,14 +89,13 @@ namespace Saml2.Authentication.Core.Configuration
 
                             foreach (KeyDescriptor keyDescriptor in descriptor.KeyDescriptors)
                             {
-                                // On ne récupère que les certificats de signature pour le moment (ou les non spécifiés dans le doute)
-                                if (keyDescriptor.UseSpecified && keyDescriptor.Use != KeyTypes.signing)
-                                    continue;
-
                                 Certificate certificate = certificateFactory.GetCertificate((KeyInfo)keyDescriptor.KeyInfo);
                                 if (certificate != null)
                                 {
-                                    configuration.Certificate = certificate;
+                                    if (!keyDescriptor.UseSpecified || keyDescriptor.Use == KeyTypes.signing)
+                                        configuration.SigningCertificate = certificate;
+                                    if (!keyDescriptor.UseSpecified || keyDescriptor.Use == KeyTypes.encryption)
+                                        configuration.EncryptionCertificate = certificate;
                                     break;
                                 }
                             }

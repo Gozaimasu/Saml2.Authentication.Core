@@ -31,7 +31,7 @@
 
         public X509Certificate2 GetIdentityProviderSigningCertificate(string providerName)
         {
-            var certificateDetails = GetIdentityProviderConfiguration(providerName).Certificate;
+            var certificateDetails = GetIdentityProviderConfiguration(providerName).SigningCertificate;
 
             var certificate = LoadCertificate(certificateDetails);
             if (certificate == null)
@@ -44,13 +44,27 @@
 
         public X509Certificate2 ServiceProviderSigningCertificate()
         {
-            var certificateDetails = ServiceProviderConfiguration.Certificate;
+            var certificateDetails = ServiceProviderConfiguration.SigningCertificate;
 
             var certificate = LoadCertificate(certificateDetails);
             if (certificate == null)
             {
                 throw new InvalidOperationException("Missing ServiceProvider certificate");
             }
+
+            CheckPrivateKey(certificate);
+            return certificate;
+        }
+
+        public X509Certificate2 ServiceProviderEncryptionCertificate()
+        {
+            var certificateDetails = ServiceProviderConfiguration.EncryptionCertificate;
+            if (certificateDetails == null)
+                return null;
+
+            var certificate = LoadCertificate(certificateDetails);
+            if (certificate == null)
+                return null;
 
             CheckPrivateKey(certificate);
             return certificate;

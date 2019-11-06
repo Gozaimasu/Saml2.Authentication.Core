@@ -95,9 +95,9 @@
         public Saml2Assertion GetValidatedAssertion(XmlElement element, string identityProviderName)
         {
             var signingCertificate = _configurationProvider.GetIdentityProviderSigningCertificate(identityProviderName);
-            var encryptionCertificate = _configurationProvider.ServiceProviderSigningCertificate();
+            var encryptionCertificate = _configurationProvider.ServiceProviderEncryptionCertificate();
 
-            var assertionElement = _xmlProvider.GetAssertion(element, encryptionCertificate.PrivateKey);
+            var assertionElement = _xmlProvider.GetAssertion(element, encryptionCertificate?.PrivateKey);
             var key = signingCertificate.PublicKey.Key;
             var audience = ServiceProviderConfiguration.EntityId;
 

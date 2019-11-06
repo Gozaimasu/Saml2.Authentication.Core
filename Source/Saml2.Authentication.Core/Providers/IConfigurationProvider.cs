@@ -12,5 +12,7 @@
         X509Certificate2 GetIdentityProviderSigningCertificate(string providerName);
 
         X509Certificate2 ServiceProviderSigningCertificate();
+
+        X509Certificate2 ServiceProviderEncryptionCertificate();
     }
 }
