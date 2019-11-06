@@ -96,7 +96,6 @@ namespace Saml2.Authentication.Core.Configuration
                                         configuration.SigningCertificate = certificate;
                                     if (!keyDescriptor.UseSpecified || keyDescriptor.Use == KeyTypes.encryption)
                                         configuration.EncryptionCertificate = certificate;
-                                    break;
                                 }
                             }
                         }
