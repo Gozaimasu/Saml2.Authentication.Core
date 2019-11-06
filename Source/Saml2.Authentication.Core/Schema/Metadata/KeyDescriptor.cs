@@ -10,8 +10,8 @@ namespace dk.nita.saml20.Schema.Metadata
     /// to sign data or receive encrypted keys, along with additional cryptographic details.
     /// </summary>
     [Serializable]
-    [XmlType(Namespace=Saml2Constants.METADATA)]
-    [XmlRoot(ELEMENT_NAME, Namespace=Saml2Constants.METADATA, IsNullable=false)]
+    [XmlType(Namespace = Saml2Constants.METADATA)]
+    [XmlRoot(ELEMENT_NAME, Namespace = Saml2Constants.METADATA, IsNullable = false)]
     public class KeyDescriptor
     {
         /// <summary>
@@ -19,23 +19,11 @@ namespace dk.nita.saml20.Schema.Metadata
         /// </summary>
         public const string ELEMENT_NAME = "KeyDescriptor";
 
-        private EncryptionMethod[] encryptionMethodField;
-        private KeyInfo keyInfoField;
-
-        private KeyTypes useField;
-
-        private bool useFieldSpecified;
-
-
         /// <summary>
         /// The XML Signature element KeyInfo. Can be implicitly converted to the .NET class System.Security.Cryptography.Xml.KeyInfo.
         /// </summary>
-        [XmlElement(Namespace=Saml2Constants.XMLDSIG)]
-        public KeyInfo KeyInfo
-        {
-            get { return keyInfoField; }
-            set { keyInfoField = value; }
-        }
+        [XmlElement(Namespace = Saml2Constants.XMLDSIG)]
+        public KeyInfo KeyInfo { get; set; }
 
 
         /// <summary>
@@ -46,11 +34,7 @@ namespace dk.nita.saml20.Schema.Metadata
         /// </summary>
         /// <value>The encryption method.</value>
         [XmlElement("EncryptionMethod")]
-        public EncryptionMethod[] EncryptionMethod
-        {
-            get { return encryptionMethodField; }
-            set { encryptionMethodField = value; }
-        }
+        public EncryptionMethod[] EncryptionMethod { get; set; }
 
 
         /// <summary>
@@ -59,12 +43,8 @@ namespace dk.nita.saml20.Schema.Metadata
         /// KeyTypes enumeration, and consist of the values encryption and signing.
         /// </summary>
         /// <value>The use.</value>
-        [XmlAttribute]
-        public KeyTypes use
-        {
-            get { return useField; }
-            set { useField = value; }
-        }
+        [XmlAttribute(AttributeName = "use")]
+        public KeyTypes Use { get; set; }
 
 
         /// <summary>
@@ -72,10 +52,6 @@ namespace dk.nita.saml20.Schema.Metadata
         /// </summary>
         /// <value><c>true</c> if [use specified]; otherwise, <c>false</c>.</value>
         [XmlIgnore]
-        public bool useSpecified
-        {
-            get { return useFieldSpecified; }
-            set { useFieldSpecified = value; }
-        }
+        public bool UseSpecified { get; set; }
     }
 }

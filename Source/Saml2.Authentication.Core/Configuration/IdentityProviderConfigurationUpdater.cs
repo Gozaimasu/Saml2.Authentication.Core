@@ -1,12 +1,14 @@
-﻿using dk.nita.saml20.Schema.Metadata;
-using dk.nita.saml20.Schema.XmlDSig;
+﻿using dk.nita.saml20;
+using dk.nita.saml20.Schema.Metadata;
 using Microsoft.Extensions.Hosting;
+using Saml2.Authentication.Core.Factories;
 using Saml2.Authentication.Core.Schema.Metadata;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography.Xml;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -16,11 +18,13 @@ namespace Saml2.Authentication.Core.Configuration
     internal class IdentityProviderConfigurationUpdater : BackgroundService
     {
         private readonly Saml2Configuration configuration;
+        private readonly ICertificateFactory certificateFactory;
         private readonly int delay = 24 * 60 * 60 * 1000; // 24h
 
-        public IdentityProviderConfigurationUpdater(Saml2Configuration configuration)
+        public IdentityProviderConfigurationUpdater(Saml2Configuration configuration, ICertificateFactory certificateFactory)
         {
             this.configuration = configuration;
+            this.certificateFactory = certificateFactory;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -60,6 +64,10 @@ namespace Saml2.Authentication.Core.Configuration
                         {
                             IDPSSODescriptor descriptor = roles as IDPSSODescriptor;
 
+                            // On ne gère que le protocole SAML2
+                            if (descriptor.ProtocolSupportEnumeration != Saml2Constants.PROTOCOL)
+                                continue;
+
                             foreach (EndpointType singleSignOnService in descriptor.SingleSignOnService)
                             {
                                 configuration.SingleSignOnService = singleSignOnService.Location;
@@ -81,22 +89,15 @@ namespace Saml2.Authentication.Core.Configuration
 
                             foreach (KeyDescriptor keyDescriptor in descriptor.KeyDescriptors)
                             {
-                                KeyInfo keyInfo = keyDescriptor.KeyInfo;
-                                for (int i = 0; i < keyInfo.Items.Length; i++)
+                                // On ne récupère que les certificats de signature pour le moment (ou les non spécifiés dans le doute)
+                                if (keyDescriptor.UseSpecified && keyDescriptor.Use != KeyTypes.signing)
+                                    continue;
+
+                                Certificate certificate = certificateFactory.GetCertificate((KeyInfo)keyDescriptor.KeyInfo);
+                                if (certificate != null)
                                 {
-                                    if(keyInfo.ItemsElementName[i] == ItemsChoiceType2.X509Data)
-                                    {
-                                        X509Data x509Data = keyInfo.Items[i] as X509Data;
-                                        for (int j = 0; j < x509Data.Items.Length; j++)
-                                        {
-                                            if(x509Data.ItemsElementName[j] == ItemsChoiceType.X509Certificate)
-                                            {
-                                                byte[] data = x509Data.Items[j] as byte[];
-                                                if (!keyDescriptor.useSpecified || keyDescriptor.use == KeyTypes.signing)
-                                                    configuration.Certificate = new Certificate { X509String = Convert.ToBase64String(data) };
-                                            }
-                                        }
-                                    }
+                                    configuration.Certificate = certificate;
+                                    break;
                                 }
                             }
                         }

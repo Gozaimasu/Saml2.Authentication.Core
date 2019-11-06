@@ -51,6 +51,15 @@ namespace dk.nita.saml20.Schema.XmlDSig
             return result;
         }
 
+        /// <summary>
+        /// An implicit conversion between our Xml Serialization class, and the .NET framework's built-in version of KeyInfo.
+        /// </summary>
+        public static explicit operator KeyInfo(System.Security.Cryptography.Xml.KeyInfo ki)
+        {
+            XmlElement xmlElement = ki.GetXml();
+            return Serialization.DeserializeFromXmlString< KeyInfo>(xmlElement.ToString());
+        }
+
         private string idField;
         private ItemsChoiceType2[] itemsElementNameField;
         private object[] itemsField;
