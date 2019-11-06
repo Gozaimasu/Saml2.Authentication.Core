@@ -41,5 +41,7 @@
         public string ArtifactResolveService { get; set; }
 
         public Certificate Certificate { get; set; }
+
+        public string FederationMetadata { get; set; }
     }
 }

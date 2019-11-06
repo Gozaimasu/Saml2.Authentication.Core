@@ -40,6 +40,7 @@
             services.TryAddTransient<IHttpArtifactBinding, HttpArtifactBinding>();
             services.TryAddTransient<ISamlService, SamlService>();
             services.TryAddTransient<ISessionStore, CookieSessionStorage>();
+            services.AddHostedService<IdentityProviderConfigurationUpdater>();
         }
     }
 }

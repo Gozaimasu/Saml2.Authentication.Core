@@ -46,5 +46,7 @@
 
             throw new InvalidOperationException("Invalid StoreName");
         }
+
+        public string X509String { get; set; }
     }
 }

@@ -56,17 +56,28 @@
             return certificate;
         }
 
-        private X509Certificate2 LoadCertificate(Certificate certificateDetails) =>
-            certificateDetails.Thumbprint.IsNotNullOrEmpty()
-                ? FindCertificate(
+        private X509Certificate2 LoadCertificate(Certificate certificateDetails)
+        {
+            if(certificateDetails.Thumbprint.IsNotNullOrEmpty())
+            {
+                return FindCertificate(
                     certificateDetails.Thumbprint,
                     X509FindType.FindByThumbprint,
                     certificateDetails.GetStoreName(),
-                    certificateDetails.GetStoreLocation())
-                : LoadCertificateFromFile(
+                    certificateDetails.GetStoreLocation());
+            }
+
+            if(certificateDetails.FileName.IsNotNullOrEmpty())
+            {
+                return LoadCertificateFromFile(
                     certificateDetails.FileName,
                     certificateDetails.Password,
                     certificateDetails.GetKeyStorageFlags());
+            }
+
+            byte[] data = Convert.FromBase64String(certificateDetails.X509String);
+            return new X509Certificate2(data);
+        }
 
         private X509Certificate2 LoadCertificateFromFile(
             string filename,
