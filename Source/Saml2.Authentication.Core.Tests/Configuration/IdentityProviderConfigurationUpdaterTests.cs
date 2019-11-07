@@ -11,7 +11,6 @@ using System.Threading;
 using Moq;
 using System.IO;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Saml2.Authentication.Core.Tests.Configuration
 {
