@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Saml2.Authentication.Core.Tests
 {
+    [ExcludeFromCodeCoverage]
     internal class MockWebRequest : WebRequest
     {
         private readonly Uri requestUri;
@@ -170,6 +172,7 @@ namespace Saml2.Authentication.Core.Tests
         }
     }
 
+    [ExcludeFromCodeCoverage]
     internal class MockRequestCreator : IWebRequestCreate
     {
         public WebRequest Create(Uri uri)
@@ -178,6 +181,7 @@ namespace Saml2.Authentication.Core.Tests
         }
     }
 
+    [ExcludeFromCodeCoverage]
     internal class MockWebResponseElement
     {
         public readonly string Suffix;

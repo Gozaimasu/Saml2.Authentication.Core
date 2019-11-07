@@ -92,7 +92,7 @@ namespace Saml2.Authentication.Core.Configuration
                             {
                                 if (artifactResolutionService.IsDefault)
                                     configuration.ArtifactResolveService = artifactResolutionService.Location;
-                                else if(string.IsNullOrEmpty(configuration.SingleSignOutService))
+                                else if(string.IsNullOrEmpty(configuration.ArtifactResolveService))
                                     configuration.ArtifactResolveService = artifactResolutionService.Location;
                             }
 

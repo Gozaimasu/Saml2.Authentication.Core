@@ -10,9 +10,12 @@ using System.Threading.Tasks;
 using System.Threading;
 using Moq;
 using System.IO;
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Saml2.Authentication.Core.Tests.Configuration
 {
+    [ExcludeFromCodeCoverage]
     public class IdentityProviderConfigurationUpdaterTests
     {
         private readonly ServiceProvider serviceProvider;
@@ -42,11 +45,12 @@ namespace Saml2.Authentication.Core.Tests.Configuration
                     null,
                     "https://testauth.indexdev.france/adfs/ls/",
                     "https://testauth.indexdev.france/adfs/ls/")]
-        public async Task Test1(string FederationMetadataFileName,
-                                string expectedEntityId, 
-                                string expectedArtifactResolve,
-                                string expectedSingleSignOn,
-                                string expectedSingleSignOut)
+        public async Task ExecuteAsync_CorrectResults(
+            string FederationMetadataFileName,
+            string expectedEntityId, 
+            string expectedArtifactResolve,
+            string expectedSingleSignOn,
+            string expectedSingleSignOut)
         {
             ILoggerFactory loggerFactory = serviceProvider.GetService<ILoggerFactory>();
             ICertificateFactory certificateFactory = serviceProvider.GetService<ICertificateFactory>();
@@ -70,6 +74,24 @@ namespace Saml2.Authentication.Core.Tests.Configuration
             Assert.Equal(expectedSingleSignOut, identityProviderConfiguration.SingleSignOutService);
         }
 
+        [Fact]
+        public async Task ExecuteAsync_NoFederationMetadata()
+        {
+            ILoggerFactory loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+            ICertificateFactory certificateFactory = serviceProvider.GetService<ICertificateFactory>();
+
+            Saml2Configuration configuration = GetSaml2Configuration();
+
+            IdentityProviderConfigurationUpdater idpConfigUpdater =
+                new IdentityProviderConfigurationUpdater(configuration, certificateFactory, loggerFactory);
+
+            await idpConfigUpdater.StartAsync(CancellationToken.None);
+            await Task.Delay(100);//Give some time to invoke the methods under test
+            await idpConfigUpdater.StopAsync(CancellationToken.None);
+
+            IdentityProviderConfiguration identityProviderConfiguration = configuration.IdentityProviderConfiguration[0];
+        }
+
         private Saml2Configuration GetSaml2Configuration(string FederationMetadataFileName)
         {
             Saml2Configuration configuration = new Saml2Configuration
@@ -80,6 +102,22 @@ namespace Saml2.Authentication.Core.Tests.Configuration
                     {
                         Name = "MockIdP",
                         FederationMetadata = $"mock://{FederationMetadataFileName}"
+                    }
+                }
+            };
+
+            return configuration;
+        }
+
+        private Saml2Configuration GetSaml2Configuration()
+        {
+            Saml2Configuration configuration = new Saml2Configuration
+            {
+                IdentityProviderConfiguration = new List<IdentityProviderConfiguration>
+                {
+                    new IdentityProviderConfiguration
+                    {
+                        Name = "MockIdP"
                     }
                 }
             };
