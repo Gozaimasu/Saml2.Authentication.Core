@@ -91,9 +91,9 @@ namespace Saml2.Authentication.Core.Configuration
                             foreach (IndexedEndpointType artifactResolutionService in descriptor.ArtifactResolutionService)
                             {
                                 if (artifactResolutionService.IsDefault)
-                                    configuration.SingleSignOutService = artifactResolutionService.Location;
+                                    configuration.ArtifactResolveService = artifactResolutionService.Location;
                                 else if(string.IsNullOrEmpty(configuration.SingleSignOutService))
-                                    configuration.SingleSignOutService = artifactResolutionService.Location;
+                                    configuration.ArtifactResolveService = artifactResolutionService.Location;
                             }
 
                             foreach (KeyDescriptor keyDescriptor in descriptor.KeyDescriptors)
