@@ -18,8 +18,6 @@ namespace Saml2.Authentication.Core.Tests.Factories
         {
             IServiceCollection services = new ServiceCollection();
 
-            services.AddLogging();
-
             serviceProvider = services.BuildServiceProvider();
         }
 

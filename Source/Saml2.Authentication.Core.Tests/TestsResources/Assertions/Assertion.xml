@@ -1,0 +1,19 @@
+﻿<saml2:Assertion xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion" Version="2.0" ID="_cd80cf85-b1d8-4b61-8851-b83b53257638" IssueInstant="2019-11-07T14:58:09Z">
+  <saml2:Issuer>https://stubidp.sustainsys.com/Metadata</saml2:Issuer>
+  <saml2:Subject>
+    <saml2:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified">JohnDoe</saml2:NameID>
+    <saml2:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+      <saml2:SubjectConfirmationData NotOnOrAfter="2019-11-07T15:00:09Z" InResponseTo="NDc5ODQzNzEtNWNjNS00NzQ5LWE3YmQtYjkwMDYzNzNiMjE1" Recipient="https://localhost:44344//Saml2/AssertionConsumerService" />
+    </saml2:SubjectConfirmation>
+  </saml2:Subject>
+  <saml2:Conditions NotOnOrAfter="2019-11-07T15:00:09Z">
+    <saml2:AudienceRestriction>
+      <saml2:Audience>https://Saml2.Authentication.Core.Tests</saml2:Audience>
+    </saml2:AudienceRestriction>
+  </saml2:Conditions>
+  <saml2:AuthnStatement AuthnInstant="2019-11-07T14:58:09Z" SessionIndex="42">
+    <saml2:AuthnContext>
+      <saml2:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified</saml2:AuthnContextClassRef>
+    </saml2:AuthnContext>
+  </saml2:AuthnStatement>
+</saml2:Assertion>

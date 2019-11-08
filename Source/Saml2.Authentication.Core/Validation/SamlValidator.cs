@@ -94,11 +94,17 @@
 
         public Saml2Assertion GetValidatedAssertion(XmlElement element, string identityProviderName)
         {
+            if (element == null)
+                throw new ArgumentNullException(nameof(element));
+
+            if (string.IsNullOrEmpty(identityProviderName))
+                throw new ArgumentNullException(nameof(identityProviderName));
+
             var signingCertificate = _configurationProvider.GetIdentityProviderSigningCertificate(identityProviderName);
             var encryptionCertificate = _configurationProvider.ServiceProviderEncryptionCertificate();
 
             var assertionElement = _xmlProvider.GetAssertion(element, encryptionCertificate?.PrivateKey);
-            var key = signingCertificate.PublicKey.Key;
+            var key = signingCertificate?.PublicKey.Key;
             var audience = ServiceProviderConfiguration.EntityId;
 
             var keys = new List<AsymmetricAlgorithm> { key };
