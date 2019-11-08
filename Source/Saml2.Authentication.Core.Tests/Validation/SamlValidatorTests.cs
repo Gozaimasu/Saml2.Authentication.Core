@@ -35,10 +35,16 @@ namespace Saml2.Authentication.Core.Tests.Validation
         [Fact]
         public void GetValidatedAssertion_NoCertificates()
         {
+            string identityProviderName = "TestIdp";
+            string entityId = "https://stubidp.sustainsys.com/Metadata";
+
             Mock<IConfigurationProvider> configurationProviderMock = new Mock<IConfigurationProvider>();
             configurationProviderMock
                 .Setup(cp => cp.GetIdentityProviderSigningCertificate(It.IsAny<string>()))
                 .Returns((string idp) => null);
+            configurationProviderMock
+                .Setup(cp => cp.GetIdentityProviderConfiguration(It.IsAny<string>()))
+                .Returns((string idp) => new IdentityProviderConfiguration { Name = identityProviderName, EntityId = entityId });
             configurationProviderMock
                 .Setup(cp => cp.ServiceProviderEncryptionCertificate())
                 .Returns(() => null);
@@ -60,7 +66,7 @@ namespace Saml2.Authentication.Core.Tests.Validation
             doc.Load("TestsResources/Assertions/Assertion.xml");
             var notOnAfterElement = (XmlElement)doc.GetElementsByTagName(SubjectConfirmationData.ELEMENT_NAME, Saml2Constants.ASSERTION)[0];
             notOnAfterElement.SetAttribute("NotOnOrAfter", DateTime.Now.AddMinutes(1).ToUniversalTime().ToString("yyyy-MM-ddThh:mm:ssZ"));
-            samlValidator.GetValidatedAssertion((XmlElement)doc.FirstChild, "UnknownIdP");
+            samlValidator.GetValidatedAssertion((XmlElement)doc.FirstChild, identityProviderName);
         }
     }
 }

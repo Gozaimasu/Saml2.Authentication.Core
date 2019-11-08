@@ -295,6 +295,12 @@ namespace Saml2.Authentication.Core
             _samlAssertion = element;
             if (trustedSigners != null && XmlSignatureUtils.IsSigned(element))
             {
+                XmlDocument doc = new XmlDocument { PreserveWhitespace = true };
+                doc.LoadXml(element.OuterXml);
+                if (!XmlSignatureUtils.CheckSignature(doc))
+                {
+                    throw new Saml2Exception("Assertion signature could not be verified.");
+                }
                 if (!CheckSignature(trustedSigners))
                 {
                     throw new Saml2Exception("Assertion signature could not be verified.");

@@ -100,6 +100,8 @@
             if (string.IsNullOrEmpty(identityProviderName))
                 throw new ArgumentNullException(nameof(identityProviderName));
 
+            IdentityProviderConfiguration identityProviderConfiguration = _configurationProvider.GetIdentityProviderConfiguration(identityProviderName);
+
             var signingCertificate = _configurationProvider.GetIdentityProviderSigningCertificate(identityProviderName);
             var encryptionCertificate = _configurationProvider.ServiceProviderEncryptionCertificate();
 
@@ -109,6 +111,11 @@
 
             var keys = new List<AsymmetricAlgorithm> { key };
             var assertion = new Saml2Assertion(assertionElement, keys, AssertionProfile.Core, new List<string> { audience }, false);
+
+            if (assertion.Issuer.CompareTo(identityProviderConfiguration.EntityId) != 0)
+            {
+                throw new Saml2Exception("Invalid issuer");
+            }
 
             if (!ServiceProviderConfiguration.OmitAssertionSignatureCheck)
             {
