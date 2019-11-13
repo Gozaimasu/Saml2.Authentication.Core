@@ -2,6 +2,8 @@
 {
     public class ServiceProviderConfiguration
     {
+        public string Id { get; set; }
+
         public string EntityId { get; set; }
 
         public bool OmitAssertionSignatureCheck { get; set; }
