@@ -12,8 +12,7 @@ namespace Saml2.Authentication.Core.Schema.Metadata
     {
         public EntityDescriptor()
         {
-            //Roles = new List<object>();
-            //SPSSORoles = new List<object>();
+            SPSSORoles = new List<object>();
             IDPSSORoles = new List<object>();
         }
 
@@ -28,11 +27,8 @@ namespace Saml2.Authentication.Core.Schema.Metadata
         [XmlAttribute(AttributeName = "entityID")]
         public string EntityID { get; set; }
 
-        //[XmlElement(ElementName = "RoleDescriptor", Type = typeof(RoleDescriptor), IsNullable = true)]
-        //public List<object> Roles { get; set; }
-
-        //[XmlElement(ElementName = "SPSSODescriptor", Type = typeof(SPSSODescriptor), IsNullable = true)]
-        //public List<object> SPSSORoles { get; set; }
+        [XmlElement(ElementName = "SPSSODescriptor", Type = typeof(SPSSODescriptor), IsNullable = true)]
+        public List<object> SPSSORoles { get; set; }
 
         [XmlElement(ElementName = "IDPSSODescriptor", Type = typeof(IDPSSODescriptor), IsNullable = true)]
         public List<object> IDPSSORoles { get; set; }
