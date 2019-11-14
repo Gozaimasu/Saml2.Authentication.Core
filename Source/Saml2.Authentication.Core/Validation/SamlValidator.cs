@@ -94,15 +94,28 @@
 
         public Saml2Assertion GetValidatedAssertion(XmlElement element, string identityProviderName)
         {
+            if (element == null)
+                throw new ArgumentNullException(nameof(element));
+
+            if (string.IsNullOrEmpty(identityProviderName))
+                throw new ArgumentNullException(nameof(identityProviderName));
+
+            IdentityProviderConfiguration identityProviderConfiguration = _configurationProvider.GetIdentityProviderConfiguration(identityProviderName);
+
             var signingCertificate = _configurationProvider.GetIdentityProviderSigningCertificate(identityProviderName);
             var encryptionCertificate = _configurationProvider.ServiceProviderEncryptionCertificate();
 
             var assertionElement = _xmlProvider.GetAssertion(element, encryptionCertificate?.PrivateKey);
-            var key = signingCertificate.PublicKey.Key;
+            var key = signingCertificate?.PublicKey.Key;
             var audience = ServiceProviderConfiguration.EntityId;
 
             var keys = new List<AsymmetricAlgorithm> { key };
             var assertion = new Saml2Assertion(assertionElement, keys, AssertionProfile.Core, new List<string> { audience }, false);
+
+            if (assertion.Issuer.CompareTo(identityProviderConfiguration.EntityId) != 0)
+            {
+                throw new Saml2Exception("Invalid issuer");
+            }
 
             if (!ServiceProviderConfiguration.OmitAssertionSignatureCheck)
             {

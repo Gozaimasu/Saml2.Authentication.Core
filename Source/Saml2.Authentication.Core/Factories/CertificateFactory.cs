@@ -34,7 +34,13 @@ namespace Saml2.Authentication.Core.Factories
 
         private Certificate GetCertificateFromX509Data(KeyInfoX509Data x509Data)
         {
-            if (x509Data.Certificates.Count == 0)
+            if (x509Data == null)
+                throw new ArgumentNullException(nameof(x509Data));
+
+            if (x509Data.Certificates == null)
+                return null;
+
+            if (x509Data?.Certificates?.Count == 0)
                 return null;
 
             X509Certificate2 certificate = x509Data.Certificates[0] as X509Certificate2;
